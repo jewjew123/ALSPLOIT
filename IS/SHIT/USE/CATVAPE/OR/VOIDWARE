@@ -1937,8 +1937,8 @@ local BedwarsUtilities = {
 }
 
 local BedwarsConstants = {
-	--CombatConstant = require(ReplicatedStorageService.TS.combat["combat-constant"]).CombatConstant,
-	--CPSConstants = require(ReplicatedStorageService.TS["shared-constants"]).CpsConstants
+	CombatConstant = require(ReplicatedStorageService.TS.combat["combat-constant"]).CombatConstant,
+	CPSConstants = require(ReplicatedStorageService.TS["shared-constants"]).CpsConstants
 }
 
 local BedwarsMetas = {
@@ -2500,7 +2500,6 @@ end
 
 local function GetQueueType()
 	local State = ClientStore:getState()
-
 	return State.Game.queueType or "bedwars_test"
 end
 
@@ -2771,7 +2770,7 @@ local UtilityTab = AlSploitLibrary:CreateTab("Utility")
 local WorldTab = AlSploitLibrary:CreateTab("World")
 local OtherTab = AlSploitLibrary:CreateTab("Other")
 
---[[task.spawn(function()
+--[[ task.spawn(function()
 	local DirectionSwitchTick = tick()
 
 	local ScytheDisabler = CombatTab:CreateToggle({
@@ -2849,7 +2848,7 @@ local OtherTab = AlSploitLibrary:CreateTab("Other")
 		MaximumValue = 100,
 		DefaultValue = 100
 	})
-end)--]]
+end) --]] 
 
 task.spawn(function()	
 	local FireDelays = {
@@ -3836,7 +3835,7 @@ task.spawn(function()
 	})
 end)
 
---[[task.spawn(function()
+task.spawn(function()
 	local OldSwingSwordAtMouse
 	local OldReach = BedwarsConstants.CombatConstant.RAYCAST_SWORD_CHARACTER_DISTANCE    
 
@@ -3885,9 +3884,9 @@ end)
 			BedwarsKnitControllers.SwordController.swingSwordAtMouse = OldSwingSwordAtMouse
 		end
 	end)
-end)--]]
+end)
 
---[[task.spawn(function()
+task.spawn(function()
 	local JadeHammerExploit = BlatantTab:CreateToggle({
 		Name = "JadeHammerExploit",
 
@@ -3916,9 +3915,9 @@ end)--]]
 		MaximumValue = 100,
 		DefaultValue = 100
 	})
-end)--]]
+end)
 
---[[task.spawn(function()
+task.spawn(function()
 	local OldBlockPlaceCPS = BedwarsConstants.CPSConstants.BLOCK_PLACE_CPS
 
 	local NoPlacementCPS = BlatantTab:CreateToggle({
@@ -3940,7 +3939,7 @@ end)--]]
 	UnInjectEvent.Event:Connect(function()
 		BedwarsConstants.CPSConstants.BLOCK_PLACE_CPS = OldBlockPlaceCPS
 	end)
-end)--]]
+end)
 
 task.spawn(function()
 	local NoFallDamage = BlatantTab:CreateToggle({
@@ -3968,7 +3967,7 @@ task.spawn(function()
 	})
 end)
 
---[[task.spawn(function()
+task.spawn(function()
 	local DamageBoost = BlatantTab:CreateToggle({
 		Name = "DamageBoost",
 
@@ -3986,7 +3985,7 @@ end)
 			DamageBoostValue = false
 		end 	
 	end)
-end)--]]
+end)
 
 task.spawn(function()
 	local InfiniteJump = BlatantTab:CreateToggle({
@@ -4051,114 +4050,6 @@ task.spawn(function()
 	})
 end)
 
---[[task.spawn(function()
-	local OldMoveFunction = BedwarsModules.ControlModule.moveFunction
-
-	local Clone
-
-	local function AttemptAnticheatBypass()
-		AnticheatBypassing = true
-		Clone = CreateClone(false)
-
-		BedwarsModules.ControlModule.moveFunction = function(Self, Vec, ...)
-			local RaycastParameters = RaycastParams.new()
-
-			RaycastParameters.FilterDescendantsInstances = {CollectionServiceBlocks}
-			RaycastParameters.FilterType = Enum.RaycastFilterType.Include
-
-			local LookVector = Vector3.new(Camera.CFrame.LookVector.X, 0, Camera.CFrame.LookVector.Z).Unit
-
-			if Clone.PrimaryPart then
-				local Raycast = WorkSpace:Raycast((Clone.PrimaryPart.Position + LookVector), Vector3.new(0, -1000, 0), RaycastParameters)
-				local Raycast2 = WorkSpace:Raycast(((Clone.PrimaryPart.Position - Vector3.new(0, 15, 0)) + (LookVector * 5)), Vector3.new(0, -1000, 0), RaycastParameters)
-
-				if Raycast or Raycast2 then
-					Clone.PrimaryPart.CFrame = CFrame.new(Clone.PrimaryPart.Position + (LookVector / (16 / GetSpeed())))
-
-					Vec = LookVector
-				end
-
-				if not Clone then
-					if IsAlive(LocalPlayer) then
-						BedwarsModules.ControlModule.moveFunction = OldMoveFunction
-
-						Camera.CameraSubject = LocalPlayer.Character.Humanoid
-					end
-				end
-			end
-
-			return OldMoveFunction(Self, Vec, ...)
-		end
-	end
-
-	local AntiLagback = BlatantTab:CreateToggle({
-		Name = "AntiLagback",
-
-		Function = function()
-			if AlSploitSettings.AntiLagback.Value == true then
-				AlSploitConnections["AntiLagbackConnection"] = LocalPlayer:GetAttributeChangedSignal("LastTeleported"):Connect(function()
-					if IsAlive(LocalPlayer) == true and GetMatchState() ~= 0 and not LocalPlayer.Character:FindFirstChildWhichIsA("ForceField") then					
-						CreateNotification(2, "Lagback Detected, Attempting Bypass")
-
-						AttemptAnticheatBypass()		
-
-						task.wait(4.5)
-
-						if IsAlive(LocalPlayer) == false then
-							BedwarsModules.ControlModule.moveFunction = OldMoveFunction
-
-							Clone:Destroy()
-
-							AnticheatBypassing = false
-						end
-
-						if IsAlive(LocalPlayer) == true then
-							BedwarsModules.ControlModule.moveFunction = OldMoveFunction
-
-							Camera.CameraSubject = LocalPlayer.Character.Humanoid
-							Clone:Destroy()
-
-							AnticheatBypassing = false
-
-							CreateNotification(2, "Successfully Bypassed Lagback")
-						end
-					end 
-				end)
-			end
-
-			if AlSploitSettings.AntiLagback.Value == false then
-				if AlSploitConnections["AntiLagbackConnection"] then
-					AlSploitConnections["AntiLagbackConnection"]:Disconnect()
-				end
-
-				BedwarsModules.ControlModule.moveFunction = OldMoveFunction
-			end
-		end,
-
-		HoverText = "Bypasses Lagbacks (Anticheat) 🔐"
-	})
-
-	local MovementMethod = AntiLagback:CreateDropdown({
-		Name = "MovementMethod",
-		HoverText = "Decide If You Control The Movement Or The Script"
-	})
-
-	MovementMethod:CreateToggle({
-		Name = "Automatic",
-
-		Function = function() end,
-
-		DefaultValue = false
-	})
-
-	MovementMethod:CreateToggle({
-		Name = "Manual",
-
-		Function = function() end,
-
-		DefaultValue = true
-	})
-end)--]]
 
 task.spawn(function()
 	local EnemyMoveDirection = "Nil"
@@ -5029,6 +4920,115 @@ task.spawn(function()
 end)
 
 task.spawn(function()
+	local OldMoveFunction = require(game.Players.LocalPlayer.PlayerScripts.PlayerModule.ControlModule).moveFunction
+
+	local Clone
+
+	local function AttemptAnticheatBypass()
+		AnticheatBypassing = true
+		Clone = CreateClone(false)
+
+		BedwarsModules.ControlModule.OldmoveFunction = function(Self, Vec, ...)
+			local RaycastParameters = RaycastParams.new()
+
+			RaycastParameters.FilterDescendantsInstances = {CollectionServiceBlocks}
+			RaycastParameters.FilterType = Enum.RaycastFilterType.Include
+
+			local LookVector = Vector3.new(Camera.CFrame.LookVector.X, 0, Camera.CFrame.LookVector.Z).Unit
+
+			if Clone.PrimaryPart then
+				local Raycast = WorkSpace:Raycast((Clone.PrimaryPart.Position + LookVector), Vector3.new(0, -1000, 0), RaycastParameters)
+				local Raycast2 = WorkSpace:Raycast(((Clone.PrimaryPart.Position - Vector3.new(0, 15, 0)) + (LookVector * 5)), Vector3.new(0, -1000, 0), RaycastParameters)
+
+				if Raycast or Raycast2 then
+					Clone.PrimaryPart.CFrame = CFrame.new(Clone.PrimaryPart.Position + (LookVector / (16 / GetSpeed())))
+
+					Vec = LookVector
+				end
+
+				if not Clone then
+					if IsAlive(LocalPlayer) then
+						BedwarsModules.ControlModule.OldmoveFunction = OldMoveFunction
+
+						Camera.CameraSubject = LocalPlayer.Character.Humanoid
+					end
+				end
+			end
+
+			return OldMoveFunction(Self, Vec, ...)
+		end
+	end
+
+	local AntiLagback = BlatantTab:CreateToggle({
+		Name = "AntiLagback",
+
+		Function = function()
+			if AlSploitSettings.AntiLagback.Value == true then
+				AlSploitConnections["AntiLagbackConnection"] = LocalPlayer:GetAttributeChangedSignal("LastTeleported"):Connect(function()
+					if IsAlive(LocalPlayer) == true and GetMatchState() ~= 0 and not LocalPlayer.Character:FindFirstChildWhichIsA("ForceField") then					
+						CreateNotification(2, "Lagback Detected, Attempting Bypass")
+
+						AttemptAnticheatBypass()		
+
+						task.wait(4.5)
+
+						if IsAlive(LocalPlayer) == false then
+							BedwarsModules.ControlModule.OldmoveFunction = OldMoveFunction
+
+							Clone:Destroy()
+
+							AnticheatBypassing = false
+						end
+
+						if IsAlive(LocalPlayer) == true then
+							BedwarsModules.ControlModule.OldmoveFunction = OldMoveFunction
+
+							Camera.CameraSubject = LocalPlayer.Character.Humanoid
+							Clone:Destroy()
+
+							AnticheatBypassing = false
+
+							CreateNotification(2, "Successfully Bypassed Lagback")
+						end
+					end 
+				end)
+			end
+
+			if AlSploitSettings.AntiLagback.Value == false then
+				if AlSploitConnections["AntiLagbackConnection"] then
+					AlSploitConnections["AntiLagbackConnection"]:Disconnect()
+				end
+
+				BedwarsModules.ControlModule.OldmoveFunction = OldMoveFunction
+			end
+		end,
+
+		HoverText = "Bypasses Lagbacks (Anticheat) 🔐"
+	})
+
+	local MovementMethod = AntiLagback:CreateDropdown({
+		Name = "MovementMethod",
+		HoverText = "Decide If You Control The Movement Or The Script"
+	})
+
+	MovementMethod:CreateToggle({
+		Name = "Automatic",
+
+		Function = function() end,
+
+		DefaultValue = false
+	})
+
+	MovementMethod:CreateToggle({
+		Name = "Manual",
+
+		Function = function() end,
+
+		DefaultValue = true
+	})
+end)
+
+task.spawn(function()
 	local PickupItemRange = UtilityTab:CreateToggle({
 		Name = "PickupItemRange",
 
@@ -5103,7 +5103,7 @@ task.spawn(function()
 	end)
 end)
 
---[[task.spawn(function()
+task.spawn(function()
 	local QueueType = GetQueueType()
 
 	local AutoJoinQueue = UtilityTab:CreateToggle({
@@ -5133,7 +5133,7 @@ end)
 			BedwarsRemotes.JoinQueueRemote:FireServer({queueType = GetQueueType()})
 		end	
 	end)
-end)--]]
+end)
 
 task.spawn(function()
 	local MessageTable = {
@@ -5215,7 +5215,7 @@ task.spawn(function()
 	})
 end)
 
---[[task.spawn(function()
+task.spawn(function()
 	local OldGlobalChatSystemMessages = ClientStore:getState().Settings.global_chat_system_messages
 	local OldProfileVisibility = ClientStore:getState().Settings.profile_visilility
 	local OldFriendSpectating = ClientStore:getState().Settings.friendSpectating
@@ -5253,7 +5253,7 @@ end)
 		ClientStore:getState().Settings.friendSpectating = OldFriendSpectating
 		ClientStore:getState().Settings.streamer_mode = OldStreamerMode
 	end)
-end) --]]
+end)
 
 task.spawn(function()
 	local ReportedList = {}
@@ -9039,7 +9039,7 @@ task.spawn(function()
 end)
 
 task.spawn(function()
-	local AlSploitWhitelistedUsers = {"mrdreyoo", "tonightshewillbemine", "yuungasian", "Harleyisopp17", "Sigmaautofarm", "Ned31k", "Matto0613", "slaying_135", "BerneerYT", "islandsiopp4", "oceanicfalcondude101", "hshehzheheh"}
+	local AlSploitWhitelistedUsers = {"mrdreyoo", "tonightshewillbemine", "yuungasian", "nondivergent", "itsmessas99", "Harleyisopp17", "Sigmaautofarm", "Ned31k", "Matto0613", "slaying_135", "BerneerYT", "islandsiopp4", "oceanicfalcondude101", "hshehzheheh"}
 	local AlSploitOwners = {"AlSploitCooking", "ChristmasCandyGobler", "MonkeOnZaCar", "nondivergent", "itsmessas99"}
 
 	for i, v in next, PlayerService:GetPlayers() do
